@@ -1,0 +1,657 @@
+#:import dp kivy.metrics.dp
+
+<PinButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    font_size: 20
+    color: 1, 1, 1, 1
+    canvas.before:
+        Color:
+            rgba: self.bg_color if self.state == "normal" else (self.bg_color[0] * 0.8, self.bg_color[1] * 0.8, self.bg_color[2] * 0.8, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [12]
+    bg_color: 0.18, 0.27, 0.35, 1
+
+<BackButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: 0.4, 0.4, 0.4, 1
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15]
+
+<NavButton@Button>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    font_size: 14
+    color: 1, 1, 1, 1
+    bg_color: 0.1, 0.2, 0.25, 1
+    canvas.before:
+        Color:
+            rgba: self.bg_color if self.state == "normal" else (self.bg_color[0] * 0.85, self.bg_color[1] * 0.85, self.bg_color[2] * 0.85, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [12]
+
+<DeviceButton>:
+    background_normal: ""
+    background_down: ""
+    background_color: 0, 0, 0, 0
+    border: 0, 0, 0, 0
+    size_hint: None, None
+    size: 100, 35
+    font_size: 14
+    color: 1, 1, 1, 1
+    canvas.before:
+        Color:
+            rgba: self.bg_color
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [15]
+
+<RoomScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.02, 0.05, 0.09, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: [dp(15), dp(10), dp(15), dp(8)]
+        spacing: dp(8)
+
+        # ================= TITLE =================
+        Label:
+            text: "SMART CLASSROOM"
+            font_size: 28
+            bold: True
+            size_hint_y: None
+            height: dp(35)
+            color: 0.2, 0.9, 1, 1
+
+        # ================= HEADER =================
+        BoxLayout:
+            size_hint_y: None
+            height: dp(45)
+            spacing: dp(15)
+
+            # ROOM
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                Label:
+                    text: "ROOM"
+                    size_hint_x: None
+                    width: dp(60)
+                    font_size: 16
+                    valign: "middle"
+                    halign: "left"
+                    text_size: self.size
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.1, 0.7, 0.9, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Spinner:
+                        id: room_selector
+                        text: "Select Room"
+                        font_size: 16
+                        background_normal: ""
+                        background_color: 0, 0, 0, 0
+                        on_text: root.change_room(self.text)
+
+            # DATE
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/calendar.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        id: date_label
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size# TIME
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/clock.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        id: clock
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+
+        # ================= MAIN (??????????????????) =================
+        BoxLayout:
+            spacing: dp(15)
+            size_hint_y: 0.38                  # [????????????] ???????????????????????????????????????????
+
+            # LEFT
+            BoxLayout:
+                orientation: "vertical"
+                spacing: dp(10)
+                size_hint_x: 0.55
+
+                # CURRENT
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: dp(12)
+                    spacing: dp(5)
+                    size_hint_y: 0.6
+                    canvas.before:
+                        Color:
+                            rgba: 0.07, 0.15, 0.25, 0.75
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [15]
+                    Label:
+                        text: "CURRENT BOOKING"
+                        size_hint_y: None
+                        height: 10
+                        font_size: 12
+                        color: 0.8, 0.9, 1, 1
+                    Label:
+                        id: current_time
+                        text: "-"
+                        font_size: 15
+                    Label:
+                        id: time_left
+                        font_size: 10
+                    ProgressBar:
+                        id: booking_progress
+                        max: 100
+                        size_hint_y: None
+                        height: 8
+
+                # NEXT
+                BoxLayout:
+                    orientation: "vertical"
+                    padding: dp(12)
+                    spacing: dp(5)
+                    size_hint_y: 0.4
+                    canvas.before:
+                        Color:
+                            rgba: 0.25, 0.15, 0.05, 0.6
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [15]
+                    Label:
+                        text: "NEXT BOOKING"
+                        size_hint_y: None
+                        height: 10
+                        font_size: 12
+                    Label:
+                        id: next_time
+                        font_size: 15# RIGHT
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.45
+                padding: dp(12)
+                canvas.before:
+                    Color:
+                        rgba: 0.04, 0.08, 0.15, 0.95
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [15]
+                Label:
+                    text: "UPCOMING BOOKINGS"
+                    size_hint_y: None
+                    height: 24
+                    font_size: 12
+                ScrollView:
+                    GridLayout:
+                        id: upcoming
+                        cols: 1
+                        spacing: dp(8)
+                        size_hint_y: None
+                        height: self.minimum_height
+
+        # ================= STATUS (??????????????????????????????????????) =================
+        BoxLayout:
+            orientation: "vertical"
+            padding: [dp(15), dp(8), dp(15), dp(12)] 
+            spacing: dp(5)
+            size_hint_y: 0.45                  # [?????] ??????????????? 0.38 ???? 0.45 ????????????????????????????????
+            canvas.before:
+                Color:
+                    rgba: 0.05, 0.1, 0.15, 0.85
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [15]
+            
+            BoxLayout:
+                size_hint_y: None
+                height: dp(22)
+                Label:
+                    text: "ROOM STATUS"
+                    font_size: 14
+                    bold: True
+                    halign: "center"
+                    valign: "middle"
+                    text_size: self.size
+                    color: 0.8, 0.9, 1, 1
+
+            ScrollView:
+                do_scroll_y: False
+                do_scroll_x: True
+                size_hint_y: 1
+                scroll_x: 0.0
+                GridLayout:
+                    id: device_status
+                    rows: 1
+                    spacing: dp(20)
+                    size_hint_x: None
+                    width: self.minimum_height
+
+        # ================= CONTROL (????????????-???? ????????????????????????) =================
+        AnchorLayout:
+            size_hint_y: None
+            height: dp(42)                    # [?????] ??????????????????????????????????? ?????????????
+            anchor_x: "center"
+            anchor_y: "center"
+            ControlButton:
+                text: "CONTROL ROOM"
+                size_hint: (None, None)
+                size: dp(160), dp(34)          # [?????] ????????????????????????????????? ?????????????????? ROOM STATUS
+                on_press: root.open_control()
+
+<PinScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.02, 0.05, 0.09, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: [dp(15), dp(10), dp(15), dp(10)]
+        spacing: dp(10)
+
+        # ================= TITLE =================
+        Label:
+            text: "SMART CLASSROOM"
+            font_size: 28
+            bold: True
+            size_hint_y: None
+            height: dp(35)
+            color: 0.2, 0.9, 1, 1
+
+        # ================= HEADER =================
+        BoxLayout:
+            size_hint_y: None
+            height: dp(45)
+            spacing: dp(15)
+
+            # ROOM
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                Label:
+                    text: "ROOM"
+                    size_hint_x: None
+                    width: dp(60)
+                    font_size: 16
+                    halign: "left"
+                    valign: "middle"
+                    text_size: self.size
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.1, 0.7, 0.9, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        text: root.room_name
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+
+            # DATE
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/calendar.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        text: root.current_date
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.width, None
+
+            # TIME
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/clock.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        text: root.current_time
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.width, None
+
+        # ================= CENTER AREA =================
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: 1
+            spacing: dp(5)
+            
+            Label:
+                text: "ENTER PIN"
+                font_size: 24
+                bold: True
+                color: 0.7, 0.9, 0.9, 1
+                size_hint_y: None
+                height: dp(-10)
+            Label:
+                text: " ".join(["."] * len(root.entered))
+                font_size: 32
+                size_hint_y: None
+                height: dp(35)
+
+            # ================= KEYPAD =================
+            AnchorLayout:
+                size_hint_y: None
+                height: dp(250)
+                GridLayout:
+                    cols: 3
+                    spacing: dp(10)
+                    size_hint: None, None
+                    width: dp(300)
+                    height: dp(250)
+                    PinButton:
+                        text: "1"
+                        on_press: root.add("1")
+                    PinButton:
+                        text: "2"
+                        on_press: root.add("2")
+                    PinButton:
+                        text: "3"
+                        on_press: root.add("3")
+                    PinButton:
+                        text: "4"
+                        on_press: root.add("4")
+                    PinButton:
+                        text: "5"
+                        on_press: root.add("5")
+                    PinButton:
+                        text: "6"
+                        on_press: root.add("6")
+                    PinButton:
+                        text: "7"
+                        on_press: root.add("7")
+                    PinButton:
+                        text: "8"
+                        on_press: root.add("8")
+                    PinButton:
+                        text: "9"
+                        on_press: root.add("9")
+                    PinButton:
+                        text: "CLEAR"
+                        font_size: 16
+                        bg_color: 1, 0.4, 0.3, 1
+                        on_press: root.clear()
+                    PinButton:
+                        text: "0"
+                        on_press: root.add("0")
+                    PinButton:
+                        text: "ENTER"
+                        font_size: 16
+                        bg_color: 0.1, 0.85, 0.55, 1
+                        on_press: root.check()
+
+        # ================= BACK =================
+        AnchorLayout:
+            size_hint_y: None
+            height: dp(50)
+            anchor_x: "center"
+            BackButton:
+                text: "BACK"
+                size_hint: (None, None)
+                size: dp(140), dp(40)
+                font_size: 16
+                on_press: app.root.current = "room"
+
+<ControlScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.02, 0.05, 0.09, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: dp(15)
+        spacing: dp(12)
+
+        # ================= HEADER =================
+        Label:
+            text: "CONTROL ROOM"
+            font_size: 28
+            bold: True
+            color: 0.08, 0.7, 0.9, 1
+            size_hint_y: None
+            height: dp(40)
+
+        BoxLayout:
+            size_hint_y: None
+            height: dp(45)
+            spacing: dp(15)
+
+            # ROOM
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                Label:
+                    text: "ROOM"
+                    size_hint_x: None
+                    width: dp(60)
+                    font_size: 16
+                    valign: "middle"
+                    halign: "left"
+                    text_size: self.size
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(45)
+                    canvas.before:
+                        Color:
+                            rgba: 0.1, 0.7, 0.9, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        text: root.room_name
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+
+            # DATE
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/calendar.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(45)
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        id: date_label
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+
+            # TIME
+            BoxLayout:
+                size_hint_x: 0.33
+                spacing: dp(5)
+                AnchorLayout:
+                    size_hint_x: None
+                    width: dp(30)
+                    Image:
+                        source: "icons/clock.png"
+                        size_hint: None, None
+                        size: dp(26), dp(26)
+                BoxLayout:
+                    size_hint_y: None
+                    height: dp(45)
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.22, 0.28, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [8]
+                    Label:
+                        id: clock
+                        font_size: 16
+                        halign: "center"
+                        valign: "middle"
+                        text_size: self.size
+
+        # ================= NAVIGATION BAR =================
+        BoxLayout:
+            size_hint_y: None
+            height: 45
+            spacing: 8
+            NavButton:
+                id: btn_lights
+                text: "LIGHTS"
+                bg_color: 0.16, 0.63, 0.78, 1
+                on_press: root.switch_tab("lights")
+            NavButton:
+                id: btn_air
+                text: "AIR"
+                on_press: root.switch_tab("air")
+            NavButton:
+                id: btn_computer
+                text: "COMPUTER"
+                on_press: root.switch_tab("computer")
+            NavButton:
+                id: btn_projector
+                text: "PROJECTOR"
+                on_press: root.switch_tab("projector")
+            NavButton:
+                id: btn_audio
+                text: "AUDIO"
+                on_press: root.switch_tab("audio")
+            NavButton:
+                id: btn_door
+                text: "DOOR"
+                on_press: root.switch_tab("door")
+
+        # ================= DEVICE AREA =================
+        Carousel:
+            id: carousel
+            direction: "right"
+            loop: False
+            scroll_timeout: 200
+            scroll_distance: 20
+
+        # ================= FOOTER =================
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            Widget:
+            BackButton:
+                text: "BACK"
+                size_hint: (None, None)
+                size: (160, 40)
+                font_size: 16
+                on_press: app.root.current = "room"
+            Widget:
